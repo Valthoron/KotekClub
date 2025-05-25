@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
         Hud.ShowSplash();
     }
 
-    void Update()
+    public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {

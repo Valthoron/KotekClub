@@ -45,6 +45,7 @@ public class Baddie : Character, IDamageable
     // Properties
     private new States State { get { return (States)base.State; } }
     private new Animations Animation { get { return (Animations)base.Animation; } }
+
     public BoxCollider2D PunchCollider;
     public HealthBar HealthBar;
     public GameObject BloodSpray;
@@ -183,7 +184,7 @@ public class Baddie : Character, IDamageable
         }
     }
 
-    void Update_StatePunch()
+    private void Update_StatePunch()
     {
         PlayAnimation(Animations.Punch);
 

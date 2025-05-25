@@ -6,10 +6,10 @@ public partial class Spawner : MonoBehaviour
 {
     // ********************************************************************************
     // Constants
-    const float _spawnPeriod = 3.5f;
-    const float _maxBaddies = 3.0f;
-    const float _foodChance = 0.0667f;
-    const int _foodGuarantee = 15;
+    const float SpawnPeriod = 3.5f;
+    const float MaxBaddies = 3.0f;
+    const float FoodChance = 0.0667f;
+    const int FoodGuarantee = 15;
 
     // ********************************************************************************
     // Members
@@ -31,7 +31,7 @@ public partial class Spawner : MonoBehaviour
 
     // ********************************************************************************
     // Unity messagees
-    void Update()
+    public void Update()
     {
         if (!Active)
             return;
@@ -40,9 +40,9 @@ public partial class Spawner : MonoBehaviour
 
         if (_timer < 0.0f)
         {
-            _timer = Random.Range(0.5f, _spawnPeriod);
+            _timer = Random.Range(0.5f, SpawnPeriod);
 
-            if (_baddies.Count < _maxBaddies)
+            if (_baddies.Count < MaxBaddies)
             {
                 Rect zone = SpawnZones[Random.Range(0, SpawnZones.Length)];
 
@@ -66,7 +66,7 @@ public partial class Spawner : MonoBehaviour
     {
         _baddies.Remove(baddie.gameObject);
 
-        if ((Random.value > _foodChance) && (_foodFails < _foodGuarantee))
+        if ((Random.value > FoodChance) && (_foodFails < FoodGuarantee))
         {
             _foodFails++;
             return;

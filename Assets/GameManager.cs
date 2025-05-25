@@ -5,8 +5,17 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     // ********************************************************************************
+    // Structs/enums
+    private enum GameState : int
+    {
+        Splash,
+        Play,
+        Over
+    }
+
+    // ********************************************************************************
     // Members
-    private bool _anyKeyPressed = false;
+    private GameState _state = GameState.Splash;
     private int _score = 0;
 
     // ********************************************************************************
@@ -29,15 +38,54 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (!_anyKeyPressed && Input.anyKeyDown)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            _anyKeyPressed = true;
-            StartGame();
+            if (Application.isEditor)
+                EditorApplication.isPlaying = false;
+            else
+                Application.Quit();
+        }
+
+        switch (_state)
+        {
+            case GameState.Splash:
+                Update_Splash();
+                break;
+
+            case GameState.Play:
+                Update_Play();
+                break;
+
+            case GameState.Over:
+                Update_Over();
+                break;
         }
     }
 
     // ********************************************************************************
     // Game events
+    private void Update_Splash()
+    {
+        if (Input.anyKeyDown)
+        {
+            Spawner.Active = true;
+            Hud.ShowPlay();
+        }
+    }
+
+    private void Update_Play()
+    {
+
+    }
+
+    private void Update_Over()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+    }
+
     private void OnDudeHealthChanged(float health)
     {
         Hud.SetHealth(health);
@@ -45,6 +93,7 @@ public class GameManager : MonoBehaviour
 
     private void OnDudeDefeated()
     {
+        _state = GameState.Over;
         Spawner.Active = false;
         Hud.ShowOver();
     }
@@ -58,13 +107,5 @@ public class GameManager : MonoBehaviour
     {
         _score += 1;
         Hud.SetScore(_score);
-    }
-
-    // ********************************************************************************
-    // Private methods
-    private void StartGame()
-    {
-        Spawner.Active = true;
-        Hud.ShowPlay();
     }
 }

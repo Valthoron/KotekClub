@@ -28,11 +28,6 @@ public class Hud : MonoBehaviour
         SetHealth(1.0f);
     }
 
-    void Update()
-    {
-
-    }
-
     // ********************************************************************************
     // Game events
     public void ShowSplash()

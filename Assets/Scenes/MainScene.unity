@@ -3077,6 +3077,8 @@ MonoBehaviour:
   Active: 0
   BaddiePrefabs:
   - {fileID: 2000266050924481874, guid: 8fe23bed23c5c4d48869961975a236da, type: 3}
+  FoodPrefabs:
+  - {fileID: 3404987535990608675, guid: 18a859ad48280db4296f383aa29c693f, type: 3}
   SpawnZones:
   - serializedVersion: 2
     x: -1.88

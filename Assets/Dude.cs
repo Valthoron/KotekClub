@@ -12,6 +12,7 @@ public class Dude : Character, IDamageable
         Punch,
         Kick,
         GetHit,
+        Pickup,
         Defeat
     }
 
@@ -22,6 +23,7 @@ public class Dude : Character, IDamageable
         Punch,
         Kick,
         GetHit,
+        Pickup,
         Defeat
     }
 
@@ -31,12 +33,14 @@ public class Dude : Character, IDamageable
     readonly Vector3 WalkSpeed = new(1.0f, 0.66f);
     readonly float PunchCooldown = 0.25f;
     readonly float KickCooldown = 0.5f;
+    readonly float PickupCooldown = 0.25f;
 
     // ********************************************************************************
     // Members
     private float _stateCooldown = 0.0f;
     private int _health = HealthMaximum;
     private Vector2 _axisMove = Vector2.zero;
+    private Food _pickupFood = null;
 
     // ********************************************************************************
     // Properties
@@ -57,15 +61,11 @@ public class Dude : Character, IDamageable
     // Unity messages
     protected override void OnStart()
     {
-        //foreach (var clip in Animator.runtimeAnimatorController.animationClips)
-        //{
-        //    //Debug.Log(clip.name);
-        //}
-
         RegisterState((int)States.Roam, "Roam", Update_StateRoam);
         RegisterState((int)States.Punch, "Punch", Update_StatePunch);
         RegisterState((int)States.Kick, "Kick", Update_StateKick);
         RegisterState((int)States.GetHit, "GetHit", Update_StateGetHit);
+        RegisterState((int)States.Pickup, "GetHit", Update_StatePickup);
         RegisterState((int)States.Defeat, "Defeat", Update_Defeat);
 
         RegisterAnimation((int)Animations.Idle, "Anim Idle", 0.0f);
@@ -73,6 +73,7 @@ public class Dude : Character, IDamageable
         RegisterAnimation((int)Animations.Punch, "Anim Punch", (6 / 12.0f) / PunchCooldown);
         RegisterAnimation((int)Animations.Kick, "Anim Kick", (6 / 12.0f) / KickCooldown);
         RegisterAnimation((int)Animations.GetHit, "Anim GetHit", 0.0f);
+        RegisterAnimation((int)Animations.Pickup, "Anim Pickup", (8 / 12.0f) / PickupCooldown);
         RegisterAnimation((int)Animations.Defeat, "Anim Defeat", 0.0f);
 
         SetState(States.Roam);
@@ -88,7 +89,7 @@ public class Dude : Character, IDamageable
 
     // ********************************************************************************
     // State handlers
-    void Update_StateRoam()
+    private void Update_StateRoam()
     {
         if (_axisMove.sqrMagnitude > 0.0f)
         {
@@ -130,7 +131,7 @@ public class Dude : Character, IDamageable
         }
     }
 
-    void Update_StatePunch()
+    private void Update_StatePunch()
     {
         PlayAnimation(Animations.Punch);
 
@@ -140,7 +141,7 @@ public class Dude : Character, IDamageable
         }
     }
 
-    void Update_StateKick()
+    private void Update_StateKick()
     {
         PlayAnimation(Animations.Kick);
 
@@ -150,7 +151,7 @@ public class Dude : Character, IDamageable
         }
     }
 
-    void Update_StateGetHit()
+    private void Update_StateGetHit()
     {
         PlayAnimation(Animations.GetHit);
 
@@ -166,6 +167,16 @@ public class Dude : Character, IDamageable
             {
                 SetState(States.Roam);
             }
+        }
+    }
+
+    private void Update_StatePickup()
+    {
+        PlayAnimation(Animations.Pickup);
+
+        if (_stateCooldown <= 0.0f)
+        {
+            SetState(States.Roam);
         }
     }
 
@@ -197,6 +208,16 @@ public class Dude : Character, IDamageable
 
         SetState(States.Kick);
         _stateCooldown = KickCooldown;
+    }
+
+    public void OnPickupFood(Food food)
+    {
+        if (State != States.Roam)
+            return;
+
+        SetState(States.Pickup);
+        _stateCooldown = PickupCooldown;
+        _pickupFood = food;
     }
 
     // ********************************************************************************
@@ -236,6 +257,16 @@ public class Dude : Character, IDamageable
 
         var targetComponent = target.GetComponent<IDamageable>();
         targetComponent.Damage(gameObject, 6);
+    }
+
+    public void EventPickup()
+    {
+        if (_pickupFood == null)
+            return;
+
+        ChangeHealth(20);
+        Destroy(_pickupFood.gameObject);
+        _pickupFood = null;
     }
 
     // ********************************************************************************

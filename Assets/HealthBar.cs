@@ -1,37 +1,51 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-	// ********************************************************************************
-	// Properties
-	public GameObject FullBar;
-	public GameObject EmptyBar;
+    // ********************************************************************************
+    // Properties
+    public Image EmptyBar;
+    public Image FullBar;
 
-	// ********************************************************************************
-	// Unity messages
-	void Start()
+    public Color FullColor = Color.green;
+    public Color EmptyColor = Color.red;
+
+    public bool Flip;
+
+    // ********************************************************************************
+    // Unity messages
+    public void Start()
+    {
+        UpdateColors();
+    }
+
+    public void Update()
     {
 
     }
 
-    void Update()
+    public void OnValidate()
     {
-        
+        SetValue(0.5f);
+        UpdateColors();
     }
 
-	// ********************************************************************************
-	// Gameplay messages
-	public void SetValue(float value)
-	{
-		value = Mathf.Clamp(value, 0.0f, 1.0f);
+    // ********************************************************************************
+    // Gameplay messages
+    public void UpdateColors()
+    {
+        EmptyBar.color = EmptyColor;
+        FullBar.color = FullColor;
+    }
 
-		Vector3 scale = FullBar.transform.localScale;
-		scale.x = value;
+    public void SetValue(float val)
+    {
+        var sizeDelta = 1f - Mathf.Clamp(val, 0f, 1f);
+        var position = (sizeDelta / 2f) * (Flip ? 1f : -1f);
 
-		Vector3 position = FullBar.transform.localPosition;
-		position.x = -(1.0f - value) * 10.0f / 2.0f;
-
-		FullBar.transform.localScale = scale;
-		FullBar.transform.localPosition = position;
-	}
+        var transform = FullBar.GetComponent<RectTransform>();
+        transform.sizeDelta = new Vector2(-sizeDelta, 0f);
+        transform.anchoredPosition = new Vector2(position, 0f);
+    }
 }

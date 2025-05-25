@@ -1,4 +1,6 @@
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,6 +20,10 @@ public class GameManager : MonoBehaviour
     public void Start()
     {
         Spawner.BaddieSpawned.AddListener(OnBaddieSpawned);
+
+        Dude.HealthChanged.AddListener(OnDudeHealthChanged);
+        Dude.Defeated.AddListener(OnDudeDefeated);
+
         Hud.ShowSplash();
     }
 
@@ -32,6 +38,17 @@ public class GameManager : MonoBehaviour
 
     // ********************************************************************************
     // Game events
+    private void OnDudeHealthChanged(float health)
+    {
+        Hud.SetHealth(health);
+    }
+
+    private void OnDudeDefeated()
+    {
+        Spawner.Active = false;
+        Hud.ShowOver();
+    }
+
     private void OnBaddieSpawned(Baddie baddie)
     {
         baddie.Defeated.AddListener(OnBaddieDefeated);

@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Hud : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class Hud : MonoBehaviour
     public GameObject Splash;
     public GameObject Play;
     public TextMeshProUGUI PlayScoreText;
+    public HealthBar Health;
     public GameObject Over;
     public TextMeshProUGUI OverScoreText;
 
@@ -18,6 +20,12 @@ public class Hud : MonoBehaviour
         Splash.SetActive(true);
         Play.SetActive(false);
         Over.SetActive(false);
+    }
+
+    public void Start()
+    {
+        SetScore(0);
+        SetHealth(1.0f);
     }
 
     void Update()
@@ -55,5 +63,10 @@ public class Hud : MonoBehaviour
 
         if (OverScoreText != null)
             OverScoreText.text = "Score: " + score.ToString();
+    }
+
+    public void SetHealth(float health)
+    {
+        Health.SetValue(health);
     }
 }

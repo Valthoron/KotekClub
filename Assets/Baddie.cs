@@ -89,6 +89,9 @@ public class Baddie : Character, IDamageable
     protected override void OnUpdate()
     {
         _stateCooldown -= Time.deltaTime;
+
+        if (_stateCooldown <= 0.0f)
+            _stateCooldown = 0.0f;
     }
 
     // ********************************************************************************
@@ -129,9 +132,13 @@ public class Baddie : Character, IDamageable
             );
 
         if (Math.Abs(playerDelta.x) > 0.3)
+        {
             _attackTimer = 0.0f;
-        else
+        }
+        else if (Player.IsAlive)
+        {
             _attackTimer += Time.deltaTime;
+        }
 
         if (Math.Abs(playerDelta.x) > 0.25)
         {
@@ -186,13 +193,12 @@ public class Baddie : Character, IDamageable
         if (_stateCooldown <= 0.0f)
         {
             SetState(States.Roam);
-            _stateCooldown = 0.0f;
         }
     }
 
     private void Update_Defeat()
     {
-        Tools.SetRenderersEnabled(HealthBar.gameObject, false);
+        HealthBar.gameObject.SetActive(false);
 
         PlayAnimation(Animations.Defeat);
 
@@ -248,7 +254,7 @@ public class Baddie : Character, IDamageable
             return;
 
         var targetComponent = target.GetComponent<IDamageable>();
-        targetComponent.Damage(gameObject, 0);
+        targetComponent.Damage(gameObject, 4);
     }
 
     // ********************************************************************************

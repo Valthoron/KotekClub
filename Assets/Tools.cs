@@ -3,51 +3,36 @@ using UnityEngine;
 
 public static class Tools
 {
-	public static GameObject GetClosestDamageable(Collider2D source)
-	{
-		List<Collider2D> results = new();
+    public static GameObject GetClosestDamageable(Collider2D source)
+    {
+        List<Collider2D> results = new();
 
-		if (source.OverlapCollider(new ContactFilter2D(), results) != 0)
-		{
-			GameObject nearestDamageable = null;
-			float nearestDistanceSquared = 0.0f;
+        if (source.OverlapCollider(new ContactFilter2D(), results) != 0)
+        {
+            GameObject nearestDamageable = null;
+            float nearestDistanceSquared = 0.0f;
 
-			foreach (var result in results)
-			{
-				if (result.gameObject == source.gameObject)
-					continue;
+            foreach (var result in results)
+            {
+                if (result.gameObject == source.gameObject)
+                    continue;
 
-				if (!result.gameObject.TryGetComponent<IDamageable>(out _))
-					continue;
-				
-				float distanceSquared = (result.transform.root.position - source.transform.root.position).sqrMagnitude;
+                if (!result.gameObject.TryGetComponent<IDamageable>(out _))
+                    continue;
 
-				if (nearestDamageable == null || distanceSquared < nearestDistanceSquared)
-				{
-					nearestDamageable = result.gameObject;
-					nearestDistanceSquared = distanceSquared;
-				}
-			}
+                float distanceSquared = (result.transform.root.position - source.transform.root.position).sqrMagnitude;
 
-			if (nearestDamageable != null)
-				return nearestDamageable;
-		}
+                if (nearestDamageable == null || distanceSquared < nearestDistanceSquared)
+                {
+                    nearestDamageable = result.gameObject;
+                    nearestDistanceSquared = distanceSquared;
+                }
+            }
 
-		return null;
-	}
+            if (nearestDamageable != null)
+                return nearestDamageable;
+        }
 
-	public static void SetRenderersEnabled(GameObject gameObject, bool enabled)
-	{
-		if (gameObject.TryGetComponent<SpriteRenderer>(out var spriteRenderer))
-			spriteRenderer.enabled = enabled;
-
-		if (gameObject.TryGetComponent<MeshRenderer>(out var meshRenderer))
-			meshRenderer.enabled = enabled;
-
-		for (int i = 0; i < gameObject.transform.childCount; i++)
-		{
-			GameObject child = gameObject.transform.GetChild(i).gameObject;
-			SetRenderersEnabled(child, enabled);
-		}
-	}
+        return null;
+    }
 }

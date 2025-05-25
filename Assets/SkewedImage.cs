@@ -1,3 +1,6 @@
+
+// SkewedImage class by Hellium in Unity Discussions
+// https://discussions.unity.com/t/is-it-possible-to-skew-or-shear-ui-elements-in-unity/149795/5
 using UnityEngine;
 using UnityEngine.UI;
 

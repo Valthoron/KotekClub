@@ -15,3 +15,4 @@ This is a simple beat-em up I made to learn Unity.
 - Mucho Pixels Character Animation Pack ([homepage](https://www.muchopixels.com/) | [asset pack](https://muchopixels.itch.io/character-animation-asset-pack))
 - Kenney Input Prompts ([homepage](kenney.nl) | [asset pack](https://kenney.nl/assets/input-prompts))
 - League Gothic by Caroline Hadilaksono, Micah Rich, & Tyler Finck ([repository](https://github.com/theleagueof/league-gothic))
+- SkewedImage class by Hellium in Unity Discussions ([post](https://discussions.unity.com/t/is-it-possible-to-skew-or-shear-ui-elements-in-unity/149795/5))

@@ -262,7 +262,7 @@ public class Baddie : Character, IDamageable
         GameObject spray = Instantiate(BloodSpray, transform);
         spray.transform.localPosition = 0.2f * Vector3.up;
         if (_knockbackDirection.x < 0.0f)
-            spray.transform.Rotate(0.0f, 180.0f, 0.0f, Space.World);
+            spray.transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
 
         SetState(States.GetHit);
         _stateCooldown = 0.25f;

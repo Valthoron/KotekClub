@@ -48,6 +48,7 @@ public class Dude : Character, IDamageable
     public bool IsAlive { get { return _health > 0; } }
 
     public BoxCollider2D PunchCollider;
+    public GameObject BloodSpray;
 
     // ********************************************************************************
     // Events
@@ -204,6 +205,11 @@ public class Dude : Character, IDamageable
             (State != States.Roam)
             )
             return;
+
+        GameObject spray = Instantiate(BloodSpray, transform);
+        spray.transform.localPosition = 0.2f * Vector3.up;
+        if (source.transform.position.x > transform.position.x)
+            spray.transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
 
         ChangeHealth(-amount);
 

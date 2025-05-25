@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public partial class Spawner : MonoBehaviour
 {
@@ -13,8 +14,8 @@ public partial class Spawner : MonoBehaviour
 
     // ********************************************************************************
     // Members
-    float _timer = 0.0f;
-    List<GameObject> _baddies = new();
+    private float _timer = 0.0f;
+    private List<GameObject> _baddies = new();
 
     // ********************************************************************************
     // Properties
@@ -22,6 +23,10 @@ public partial class Spawner : MonoBehaviour
     public GameObject[] BaddiePrefabs;
     public Rect[] SpawnZones;
     public Dude Player;
+
+    // ********************************************************************************
+    // Events
+    public UnityEvent<Baddie> BaddieSpawned;
 
     // ********************************************************************************
     // Unity messagees
@@ -47,7 +52,10 @@ public partial class Spawner : MonoBehaviour
                 baddie.transform.position = new Vector3(Random.Range(zone.xMin, zone.xMax), Random.Range(zone.yMin, zone.yMax), 0.0f);
 
                 if (baddie.TryGetComponent<Baddie>(out var baddieComponent))
+                {
                     baddieComponent.Player = Player;
+                    BaddieSpawned?.Invoke(baddieComponent);
+                }
 
                 _baddies.Add(baddie);
             }

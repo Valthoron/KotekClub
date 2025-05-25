@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
     // ********************************************************************************
     // Members
     private bool _anyKeyPressed = false;
+    private int _score = 0;
 
     // ********************************************************************************
     // Properties
@@ -16,6 +17,7 @@ public class GameManager : MonoBehaviour
     // Unity messages
     public void Start()
     {
+        Spawner.BaddieSpawned.AddListener(OnBaddieSpawned);
         Hud.ShowSplash();
     }
 
@@ -30,6 +32,16 @@ public class GameManager : MonoBehaviour
 
     // ********************************************************************************
     // Game events
+    private void OnBaddieSpawned(Baddie baddie)
+    {
+        baddie.Defeated.AddListener(OnBaddieDefeated);
+    }
+
+    private void OnBaddieDefeated(Baddie baddie)
+    {
+        _score += 1;
+        Hud.SetScore(_score);
+    }
 
     // ********************************************************************************
     // Private methods

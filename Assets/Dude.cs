@@ -28,9 +28,10 @@ public class Dude : Character, IDamageable
     // ********************************************************************************
     // Constants
     const int HealthMaximum = 50;
+    const int PunchDamage = 5;
+    const float PunchCooldown = 0.25f;
+    const float PickupCooldown = 0.25f;
     readonly Vector3 WalkSpeed = new(1.0f, 0.66f);
-    readonly float PunchCooldown = 0.25f;
-    readonly float PickupCooldown = 0.25f;
 
     // ********************************************************************************
     // Members
@@ -220,7 +221,7 @@ public class Dude : Character, IDamageable
             return;
 
         var targetComponent = target.GetComponent<IDamageable>();
-        targetComponent.Damage(gameObject, 4);
+        targetComponent.Damage(gameObject, PunchDamage);
     }
 
     public void EventPickup()

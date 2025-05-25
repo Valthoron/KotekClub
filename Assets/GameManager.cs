@@ -14,6 +14,10 @@ public class GameManager : MonoBehaviour
     }
 
     // ********************************************************************************
+    // Constants
+    private const int ScorePerDifficulty = 4;
+
+    // ********************************************************************************
     // Members
     private GameState _state = GameState.Splash;
     private int _score = 0;
@@ -100,6 +104,7 @@ public class GameManager : MonoBehaviour
 
     private void OnBaddieSpawned(Baddie baddie)
     {
+        baddie.SetDifficulty(_score / ScorePerDifficulty);
         baddie.Defeated.AddListener(OnBaddieDefeated);
     }
 

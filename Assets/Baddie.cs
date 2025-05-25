@@ -27,15 +27,21 @@ public class Baddie : Character, IDamageable
 
     // ********************************************************************************
     // Constants
-    const int HealthMaximum = 20;
+    const int HealthMaximumBase = 15;
+    const int HealthMaximumPerDifficulty = 2;
+    const int PunchDamageBase = 4;
+    const int PunchDamagePerDifficulty = 1;
     const float PunchCooldown = 0.25f;
 
     readonly Vector3 WalkSpeed = new(0.9f, 0.6f);
 
     // ********************************************************************************
     // Members
+    private int _health = HealthMaximumBase;
+    private int _healthMaximum = HealthMaximumBase;
+    private int _punchDamage = PunchDamageBase;
+
     private float _stateCooldown = 0.0f;
-    private int _health = HealthMaximum;
     private Vector3 _knockbackDirection = Vector3.zero;
     private float _tauntTimer;
     private Vector3 _followOffset;
@@ -218,6 +224,14 @@ public class Baddie : Character, IDamageable
 
     // ********************************************************************************
     // Gameplay messages
+    public void SetDifficulty(int difficulty)
+    {
+        _healthMaximum = HealthMaximumBase + (difficulty * HealthMaximumPerDifficulty);
+        _health = _healthMaximum;
+
+        _punchDamage = PunchDamageBase + (difficulty * PunchDamagePerDifficulty);
+    }
+
     public void Damage(GameObject source, int amount)
     {
         if (
@@ -229,7 +243,7 @@ public class Baddie : Character, IDamageable
         _tauntTimer = 0.0f;
 
         _health -= amount;
-        HealthBar.SetValue((float)_health / HealthMaximum);
+        HealthBar.SetValue((float)_health / _healthMaximum);
 
         _knockbackDirection.x = 0.5f * (source.transform.position.x < transform.position.x ? 1.0f : -1.0f);
 
@@ -252,7 +266,7 @@ public class Baddie : Character, IDamageable
             return;
 
         var targetComponent = target.GetComponent<IDamageable>();
-        targetComponent.Damage(gameObject, 4);
+        targetComponent.Damage(gameObject, _punchDamage);
     }
 
     // ********************************************************************************

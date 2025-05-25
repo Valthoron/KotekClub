@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -55,7 +56,7 @@ public class Baddie : Character, IDamageable
     public BoxCollider2D PunchCollider;
     public HealthBar HealthBar;
     public GameObject BloodSpray;
-    public Dude Player;
+    public Character Target;
 
     // ********************************************************************************
     // Events
@@ -123,42 +124,53 @@ public class Baddie : Character, IDamageable
 
     private void Update_StateRoam()
     {
-        // Move to player
+        // Validate target
+        UpdateTarget();
+
+        if (Target == null)
+        {
+            PlayAnimation(Animations.Idle);
+            return;
+        }
+
+        // Determine movement
         Vector3 moveAxis = Vector2.zero;
 
-        var playerDelta = Player.transform.position - transform.position + _followOffset;
+        var targetDelta = Target.transform.position - transform.position + _followOffset;
 
-        SpriteRenderer.flipX = playerDelta.x < 0.0f;
+        SpriteRenderer.flipX = targetDelta.x < 0.0f;
         PunchCollider.transform.localPosition = new Vector3(
-            Mathf.Sign(playerDelta.x) * Mathf.Abs(PunchCollider.transform.localPosition.x),
+            Mathf.Sign(targetDelta.x) * Mathf.Abs(PunchCollider.transform.localPosition.x),
             PunchCollider.transform.localPosition.y,
             PunchCollider.transform.localPosition.z
             );
 
-        if (Math.Abs(playerDelta.x) > 0.3)
+        if (Math.Abs(targetDelta.x) > 0.23)
+        {
+            moveAxis.x = Math.Sign(targetDelta.x);
+
+        }
+        else if (Math.Abs(targetDelta.x) < 0.15)
+        {
+            moveAxis.x = -Math.Sign(targetDelta.x);
+        }
+
+        if (Math.Abs(targetDelta.y) > 0.1)
+        {
+            moveAxis.y = Math.Sign(targetDelta.y);
+        }
+
+        // Count down for attack
+        if ((Target == null) || (Math.Abs(targetDelta.x) > 0.3))
         {
             _attackTimer = 0.0f;
         }
-        else if (Player.IsAlive)
+        else
         {
             _attackTimer += Time.deltaTime;
         }
 
-        if (Math.Abs(playerDelta.x) > 0.25)
-        {
-            moveAxis.x = Math.Sign(playerDelta.x);
-
-        }
-        else if (Math.Abs(playerDelta.x) < 0.15)
-        {
-            moveAxis.x = -Math.Sign(playerDelta.x);
-        }
-
-        if (Math.Abs(playerDelta.y) > 0.1)
-        {
-            moveAxis.y = Math.Sign(playerDelta.y);
-        }
-
+        // Perform action
         if (_attackTimer > 1.0f)
         {
             SetState(States.Punch);
@@ -177,7 +189,7 @@ public class Baddie : Character, IDamageable
             PlayAnimation(Animations.Idle);
         }
 
-        // Taunt
+        // Initiate taunt
         if (_tauntTimer > 0.0f)
         {
             _tauntTimer -= Time.deltaTime;
@@ -254,6 +266,16 @@ public class Baddie : Character, IDamageable
 
         SetState(States.GetHit);
         _stateCooldown = 0.25f;
+
+        if (source.TryGetComponent<Baddie>(out var baddie))
+        {
+            // Infight
+            Target = baddie;
+        }
+        else if (source.TryGetComponent<Dude>(out var dude))
+        {
+            Target = dude;
+        }
     }
 
     // ********************************************************************************
@@ -279,5 +301,48 @@ public class Baddie : Character, IDamageable
     private void PlayAnimation(Animations animation)
     {
         PlayAnimation((int)animation);
+    }
+
+    private void UpdateTarget()
+    {
+        if (Target == null)
+        {
+            // Nothing to do
+            return;
+        }
+
+        if (Target.TryGetComponent<Dude>(out var dude))
+        {
+            // Target is the player
+            if (!dude.IsAlive)
+            {
+                // Player defeated, find a random baddie
+                var baddies = FindObjectsByType<Baddie>(FindObjectsSortMode.None).ToList();
+                baddies.RemoveAll(b => b == this); // Don't target self
+                baddies.RemoveAll(b => b.State == States.Defeat); // Don't target defeated baddies
+
+                if (baddies.Count > 0)
+                {
+                    Target = baddies[UnityEngine.Random.Range(0, baddies.Count)];
+                }
+                else
+                {
+                    // Last survivor
+                    Target = null;
+                }
+
+                return;
+            }
+        }
+        else if (Target.TryGetComponent<Baddie>(out var baddie))
+        {
+            // Target is another baddie
+            if (baddie.State == States.Defeat)
+            {
+                // Baddie defeated, reacquire player
+                Target = FindObjectOfType<Dude>();
+                return;
+            }
+        }
     }
 }

@@ -51,7 +51,7 @@ public partial class Spawner : MonoBehaviour
                 baddie.transform.position = new Vector3(Random.Range(zone.xMin, zone.xMax), Random.Range(zone.yMin, zone.yMax), 0.0f);
 
                 var baddieComponent = baddie.GetComponent<Baddie>();
-                baddieComponent.Player = Player;
+                baddieComponent.Target = Player;
                 baddieComponent.Defeated.AddListener(OnBaddieDefeated);
 
                 BaddieSpawned?.Invoke(baddieComponent);

@@ -249,7 +249,7 @@ MonoBehaviour:
   PunchCollider: {fileID: 7932578439270319025}
   HealthBar: {fileID: 2377309552688598063}
   BloodSpray: {fileID: 1325372169927401553, guid: 5ead0c94ebfd0614ea82e596fea10eea, type: 3}
-  Player: {fileID: 0}
+  Target: {fileID: 0}
   Defeated:
     m_PersistentCalls:
       m_Calls: []

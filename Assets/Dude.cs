@@ -10,7 +10,6 @@ public class Dude : Character, IDamageable
     {
         Roam,
         Punch,
-        Kick,
         GetHit,
         Pickup,
         Defeat
@@ -21,7 +20,6 @@ public class Dude : Character, IDamageable
         Idle,
         Walk,
         Punch,
-        Kick,
         GetHit,
         Pickup,
         Defeat
@@ -32,7 +30,6 @@ public class Dude : Character, IDamageable
     const int HealthMaximum = 50;
     readonly Vector3 WalkSpeed = new(1.0f, 0.66f);
     readonly float PunchCooldown = 0.25f;
-    readonly float KickCooldown = 0.5f;
     readonly float PickupCooldown = 0.25f;
 
     // ********************************************************************************
@@ -50,7 +47,6 @@ public class Dude : Character, IDamageable
     public bool IsAlive { get { return _health > 0; } }
 
     public BoxCollider2D PunchCollider;
-    public BoxCollider2D KickCollider;
 
     // ********************************************************************************
     // Events
@@ -63,7 +59,6 @@ public class Dude : Character, IDamageable
     {
         RegisterState((int)States.Roam, "Roam", Update_StateRoam);
         RegisterState((int)States.Punch, "Punch", Update_StatePunch);
-        RegisterState((int)States.Kick, "Kick", Update_StateKick);
         RegisterState((int)States.GetHit, "GetHit", Update_StateGetHit);
         RegisterState((int)States.Pickup, "GetHit", Update_StatePickup);
         RegisterState((int)States.Defeat, "Defeat", Update_Defeat);
@@ -71,7 +66,6 @@ public class Dude : Character, IDamageable
         RegisterAnimation((int)Animations.Idle, "Anim Idle", 0.0f);
         RegisterAnimation((int)Animations.Walk, "Anim Walk", 0.0f);
         RegisterAnimation((int)Animations.Punch, "Anim Punch", (6 / 12.0f) / PunchCooldown);
-        RegisterAnimation((int)Animations.Kick, "Anim Kick", (6 / 12.0f) / KickCooldown);
         RegisterAnimation((int)Animations.GetHit, "Anim GetHit", 0.0f);
         RegisterAnimation((int)Animations.Pickup, "Anim Pickup", (8 / 12.0f) / PickupCooldown);
         RegisterAnimation((int)Animations.Defeat, "Anim Defeat", 0.0f);
@@ -141,16 +135,6 @@ public class Dude : Character, IDamageable
         }
     }
 
-    private void Update_StateKick()
-    {
-        PlayAnimation(Animations.Kick);
-
-        if (_stateCooldown <= 0.0f)
-        {
-            SetState(States.Roam);
-        }
-    }
-
     private void Update_StateGetHit()
     {
         PlayAnimation(Animations.GetHit);
@@ -201,15 +185,6 @@ public class Dude : Character, IDamageable
         _stateCooldown = PunchCooldown;
     }
 
-    public void OnKick()
-    {
-        if (State != States.Roam)
-            return;
-
-        SetState(States.Kick);
-        _stateCooldown = KickCooldown;
-    }
-
     public void OnPickupFood(Food food)
     {
         if (State != States.Roam)
@@ -246,17 +221,6 @@ public class Dude : Character, IDamageable
 
         var targetComponent = target.GetComponent<IDamageable>();
         targetComponent.Damage(gameObject, 4);
-    }
-
-    public void EventKickConnect()
-    {
-        var target = Tools.GetClosestDamageable(PunchCollider);
-
-        if (target == null)
-            return;
-
-        var targetComponent = target.GetComponent<IDamageable>();
-        targetComponent.Damage(gameObject, 6);
     }
 
     public void EventPickup()

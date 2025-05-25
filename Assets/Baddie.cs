@@ -20,7 +20,6 @@ public class Baddie : Character, IDamageable
         Idle,
         Walk,
         Punch,
-        Kick,
         GetHit,
         Defeat,
         Taunt
@@ -30,7 +29,6 @@ public class Baddie : Character, IDamageable
     // Constants
     const int HealthMaximum = 20;
     const float PunchCooldown = 0.25f;
-    const float KickCooldown = 0.5f;
 
     readonly Vector3 WalkSpeed = new(0.9f, 0.6f);
 
@@ -69,7 +67,6 @@ public class Baddie : Character, IDamageable
         RegisterAnimation((int)Animations.Idle, "Anim Idle", 0.0f);
         RegisterAnimation((int)Animations.Walk, "Anim Walk", 0.0f);
         RegisterAnimation((int)Animations.Punch, "Anim Punch", (6 / 12.0f) / PunchCooldown);
-        RegisterAnimation((int)Animations.Kick, "Anim Kick", (6 / 12.0f) / KickCooldown);
         RegisterAnimation((int)Animations.GetHit, "Anim GetHit", 0.0f);
         RegisterAnimation((int)Animations.Defeat, "Anim Defeat", 0.0f);
         RegisterAnimation((int)Animations.Taunt, "Anim Taunt", 0.0f);

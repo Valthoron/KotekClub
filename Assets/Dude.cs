@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
 
 public class Dude : Character, IDamageable
 {
@@ -173,9 +172,9 @@ public class Dude : Character, IDamageable
 
     // ********************************************************************************
     // Input events
-    public void OnMove(InputValue value)
+    public void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
-        _axisMove = value.Get<Vector2>();
+        _axisMove = context.ReadValue<Vector2>();
     }
 
     public void OnPunch()

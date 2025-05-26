@@ -265,6 +265,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Health Bar
       objectReference: {fileID: 0}
+    - target: {fileID: 95006675533635574, guid: 54262f663883152469fe0792a47f5fde, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2617044768672656742, guid: 54262f663883152469fe0792a47f5fde, type: 3}
       propertyPath: FullColor.b
       value: 1

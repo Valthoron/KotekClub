@@ -40,56 +40,8 @@ public class GameManager : MonoBehaviour
         Hud.ShowSplash();
     }
 
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (Application.isEditor)
-                EditorApplication.isPlaying = false;
-            else
-                Application.Quit();
-        }
-
-        switch (_state)
-        {
-            case GameState.Splash:
-                Update_Splash();
-                break;
-
-            case GameState.Play:
-                Update_Play();
-                break;
-
-            case GameState.Over:
-                Update_Over();
-                break;
-        }
-    }
-
     // ********************************************************************************
     // Game events
-    private void Update_Splash()
-    {
-        if (Input.anyKeyDown)
-        {
-            Spawner.Active = true;
-            Hud.ShowPlay();
-        }
-    }
-
-    private void Update_Play()
-    {
-
-    }
-
-    private void Update_Over()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-    }
-
     private void OnDudeHealthChanged(float health)
     {
         Hud.SetHealth(health);
@@ -110,7 +62,46 @@ public class GameManager : MonoBehaviour
 
     private void OnBaddieDefeated(Baddie baddie)
     {
+        if (_state != GameState.Play)
+            return;
+
         _score += 1;
         Hud.SetScore(_score);
+    }
+
+    // ********************************************************************************
+    // Input events
+    public void OnBegin()
+    {
+        if ((_state == GameState.Splash) && UnityEngine.Rendering.SplashScreen.isFinished)
+        {
+            _state = GameState.Play;
+            Spawner.Active = true;
+            Hud.ShowPlay();
+        }
+    }
+
+    public void OnRestart()
+    {
+        if (_state == GameState.Over)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+    }
+
+    public void OnExit()
+    {
+#if UNITY_EDITOR
+
+        if (Application.isEditor)
+            EditorApplication.isPlaying = false;
+        else
+            Application.Quit();
+
+#elif !UNITY_WEBGL
+
+        Application.Quit();
+
+#endif
     }
 }

@@ -5,6 +5,7 @@ public class Hud : MonoBehaviour
 {
     // ********************************************************************************
     // Properties
+    public GameObject TouchControls;
     public GameObject Splash;
     public GameObject Play;
     public TextMeshProUGUI PlayScoreText;
@@ -16,6 +17,7 @@ public class Hud : MonoBehaviour
     // Unity messages
     public void Awake()
     {
+        TouchControls.SetActive(false);
         Splash.SetActive(true);
         Play.SetActive(false);
         Over.SetActive(false);
@@ -25,6 +27,12 @@ public class Hud : MonoBehaviour
     {
         SetScore(0);
         SetHealth(1.0f);
+    }
+
+    public void Update()
+    {
+        if (Input.touchCount > 0)
+            TouchControls.SetActive(true);
     }
 
     // ********************************************************************************

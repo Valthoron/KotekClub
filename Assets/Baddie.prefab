@@ -246,6 +246,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SpriteRenderer: {fileID: 6731668478735449138}
   Animator: {fileID: 4736766138192368523}
+  BodyCollider: {fileID: 5432422014767688632}
   PunchCollider: {fileID: 7932578439270319025}
   HealthBar: {fileID: 2377309552688598063}
   BloodSpray: {fileID: 1325372169927401553, guid: caeba8befdcfdf64f958b44493e07e71, type: 3}

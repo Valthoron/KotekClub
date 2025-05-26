@@ -1602,6 +1602,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SpriteRenderer: {fileID: 774553754}
   Animator: {fileID: 774553756}
+  BodyCollider: {fileID: 774553759}
   PunchCollider: {fileID: 1090985520}
   BloodSpray: {fileID: 1325372169927401553, guid: caeba8befdcfdf64f958b44493e07e71, type: 3}
   HealthChanged:

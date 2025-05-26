@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -53,6 +54,7 @@ public class Baddie : Character, IDamageable
     private new States State { get { return (States)base.State; } }
     private new Animations Animation { get { return (Animations)base.Animation; } }
 
+    public BoxCollider2D BodyCollider;
     public BoxCollider2D PunchCollider;
     public HealthBar HealthBar;
     public GameObject BloodSpray;
@@ -112,6 +114,7 @@ public class Baddie : Character, IDamageable
             if (_health <= 0)
             {
                 SetState(States.Defeat);
+                BodyCollider.enabled = false;
                 Defeated?.Invoke(this);
                 _stateCooldown = 3.0f;
             }

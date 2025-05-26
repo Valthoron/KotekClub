@@ -46,6 +46,7 @@ public class Dude : Character, IDamageable
 
     public bool IsAlive { get { return _health > 0; } }
 
+    public BoxCollider2D BodyCollider;
     public BoxCollider2D PunchCollider;
     public GameObject BloodSpray;
 
@@ -145,6 +146,7 @@ public class Dude : Character, IDamageable
             if (_health <= 0)
             {
                 SetState(States.Defeat);
+                BodyCollider.enabled = false;
                 Defeated?.Invoke();
                 _stateCooldown = 3.0f;
             }
